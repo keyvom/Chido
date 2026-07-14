@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHIDO - Empregos e Recrutamento Premium</title>
+  
+  <!-- Tailwind CSS para Estilização Rápida e Moderna -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Alpine.js para Reatividade e Controle de Estado (Tabs, Filtros, Modais) -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  
+  <!-- Fontes do Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef8ff',
+              100: '#d8eefe',
+              200: '#b9e0fe',
+              300: '#88cdfd',
+              400: '#50b1fa',
+              500: '#2793f5',
+              600: '#1575e7',
+              700: '#0f5fcb',
+              800: '#114fa4',
+              900: '#144382',
+              950: '#0e2a56',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Estilos customizados e animação de Brilho Metálico do Logotipo */
+    [x-cloak] { display: none !important; }
+
+    /* Efeito de brilho contínuo no texto CHIDO */
+    @keyframes textShine {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .animate-shine {
+      background: linear-gradient(
+        to right,
+        #2793f5 0%,
+        #ffffff 25%,
+        #2793f5 50%,
+        #88cdfd 75%,
+        #2793f5 100%
+      );
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: textShine 4s linear infinite;
+    }
+
+    /* Brilho geral no container do Logo */
+    .logo-container {
+      position: relative;
+      overflow: hidden;
+    }
+    .logo-container::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -150%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(
+        to right,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(255, 255, 255, 0.4) 50%,
+        rgba(255, 255, 255, 0) 100%
+      );
+      transform: skewX(-25deg);
+      animation: logoShine 6s infinite ease-in-out;
+    }
+    @keyframes logoShine {
+      0% { left: -150%; }
+      30% { left: 150%; }
+      100% { left: 150%; }
+    }
+  </style>
+</head>
+<body 
+  x-data="chidoApp()" 
+  class="bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300"
+>
+
+  <!-- NAVBAR -->
+  <header class="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/80 backdrop-blur dark:border-slate-800/80 dark:bg-slate-950/80">
+    <div class="mx-auto flex h-20 max-w-7xl items-center justify-between px-6">
+      
+      <!-- Logo CHIDO Animado (SVG interativo construído com base na imagem enviada) -->
+      <a href="#" @click.prevent="tab = 'home'" class="logo-container flex items-center gap-3 group py-2 px-3 rounded-xl transition-all duration-300 hover:bg-slate-100 dark:hover:bg-slate-900">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 100" class="h-10 w-auto transition-transform duration-300 group-hover:scale-105">
+          <defs>
+            <linearGradient id="blueC" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#2793f5" />
+              <stop offset="100%" stop-color="#0f5fcb" />
+            </linearGradient>
+            <linearGradient id="metallic" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#ffffff" />
+              <stop offset="50%" stop-color="#88cdfd" />
+              <stop offset="100%" stop-color="#2793f5" />
+            </linearGradient>
+          </defs>
+          <!-- C Externo Azul -->
+          <path d="M 85,25 A 38,38 0 1,0 85,85 A 38,38 0 0,0 100,72 L 88,62 A 24,24 0 0,1 42,55 A 24,24 0 1,1 88,46 L 100,36 A 38,38 0 0,0 85,25 Z" fill="url(#blueC)" />
+          <!-- Cabo da Lupa -->
+          <rect x="30" y="68" width="8" height="20" rx="4" transform="rotate(45 32 72)" fill="url(#metallic)" stroke="#ffffff" stroke-width="0.5" />
+          <!-- Lente e Aro da Lupa -->
+          <circle cx="58" cy="55" r="21" fill="#ffffff" fill-opacity="0.1" stroke="url(#metallic)" stroke-width="3" />
+          <!-- Usuário Interno -->
+          <circle cx="58" cy="48" r="6" fill="#2793f5" />
+          <path d="M 48,65 C 48,59 52,56 58,56 C 64,56 68,59 68,65 Z" fill="#2793f5" />
+        </svg>
+        <span class="text-3xl font-extrabold tracking-wider animate-shine">CHIDO</span>
+      </a>
+
+      <!-- Menu de Navegação -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-semibold">
+        <a href="#" @click.prevent="tab = 'home'" :class="tab === 'home' ? 'text-brand-500' : 'text-slate-600 dark:text-slate-400 hover:text-brand-500'" class="transition-colors">Início</a>
+        <a href="#" @click.prevent="tab = 'jobs'" :class="tab === 'jobs' ? 'text-brand-500' : 'text-slate-600 dark:text-slate-400 hover:text-brand-500'" class="transition-colors">Vagas</a>
+        <template x-if="isLoggedIn && userRole === 'candidate'">
+          <a href="#" @click.prevent="tab = 'candidate'" :class="tab === 'candidate' ? 'text-brand-500' : 'text-slate-600 dark:text-slate-400 hover:text-brand-500'" class="transition-colors">Painel Candidato</a>
+        </template>
+        <template x-if="isLoggedIn && userRole === 'employer'">
+          <a href="#" @click.prevent="tab = 'employer'" :class="tab === 'employer' ? 'text-brand-500' : 'text-slate-600 dark:text-slate-400 hover:text-brand-500'" class="transition-colors">Painel Empresa</a>
+        </template>
+        <template x-if="isLoggedIn && userRole === 'admin'">
+          <a href="#" @click.prevent="tab = 'admin'" :class="tab === 'admin' ? 'text-brand-500' : 'text-slate-600 dark:text-slate-400 hover:text-brand-500'" class="transition-colors">Admin</a>
+        </template>
+      </nav>
+
+      <!-- Ações (Tema e Login) -->
+      <div class="flex items-center gap-4">
+        <!-- Alternador de Tema -->
+        <button @click="toggleTheme()" class="rounded-xl p-2.5 text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800 transition-all">
+          <!-- Sol -->
+          <svg x-show="!darkMode" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"/></svg>
+          <!-- Lua -->
+          <svg x-show="darkMode" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-cloak><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+
+        <!-- Botões de Login / Usuário -->
+        <template x-if="!isLoggedIn">
+          <button @click="showLoginModal = true" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-brand-500/25">
+            Entrar / Cadastrar
+          </button>
+        </template>
+        <template x-if="isLoggedIn">
+          <div class="flex items-center gap-3">
+            <span class="text-sm font-medium text-slate-500 hidden sm:inline" x-text="'Olá, ' + userName"></span>
+            <button @click="logout()" class="border border-red-500/25 text-red-500 hover:bg-red-500/10 text-sm font-medium px-4 py-2 rounded-xl transition-all">
+              Sair
+            </button>
+          </div>
+        </template>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTEÚDO PRINCIPAL (Mudar de acordo com as Tabs) -->
+  <main class="flex-1 mx-auto w-full max-w-7xl p-6">
+    
+    <!-- ==================== TAB 1: PÁGINA INICIAL ==================== -->
+    <div x-show="tab === 'home'" class="space-y-16 py-8" x-transition>
+      
+      <!-- Hero Section -->
+      <section class="text-center max-w-4xl mx-auto space-y-6">
+        <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight leading-tight">
+          Encontre o emprego ideal ou o candidato <span class="text-brand-500">perfeito</span> com a CHIDO.
+        </h1>
+        <p class="text-lg sm:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto">
+          A plataforma premium que conecta de forma inteligente e rápida talentos a grandes empresas, sem burocracia.
+        </p>
+
+        <!-- Barra de Busca Rápida -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl shadow-xl flex flex-col md:flex-row gap-2 max-w-3xl mx-auto mt-8">
+          <div class="flex-1 flex items-center gap-3 px-3 py-2 border-b md:border-b-0 md:border-r border-slate-100 dark:border-slate-800">
+            <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <input type="text" x-model="searchQuery" placeholder="Cargo, tecnologia ou empresa..." class="bg-transparent border-0 outline-none w-full text-sm">
+          </div>
+          <div class="flex-1 flex items-center gap-3 px-3 py-2">
+            <svg class="h-5 w-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <input type="text" x-model="searchLocation" placeholder="Cidade ou 'Remoto'..." class="bg-transparent border-0 outline-none w-full text-sm">
+          </div>
+          <button @click="triggerSearch()" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-all">
+            Procurar Vagas
+          </button>
+        </div>
+
+        <div class="flex flex-wrap justify-center gap-4 mt-6">
+          <button @click="isLoggedIn ? (userRole === 'employer' ? tab = 'employer' : alert('Faça login com uma conta de Empresa')) : showLoginModal = true" class="border border-slate-300 dark:border-slate-700 hover:border-brand-500 font-semibold text-sm px-6 py-3 rounded-xl transition-all">
+            Publicar Vaga
+          </button>
+        </div>
+      </section>
+
+      <!-- Seção de Estatísticas -->
+      <section class="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-5xl mx-auto">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm text-center">
+          <p class="text-4xl font-extrabold text-brand-500">1,820+</p>
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Empresas Cadastradas</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm text-center">
+          <p class="text-4xl font-extrabold text-brand-500" x-text="jobs.length + '40+'">12,450+</p>
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Vagas Disponíveis</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm text-center">
+          <p class="text-4xl font-extrabold text-brand-500">9,310+</p>
+          <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1">Profissionais Contratados</p>
+        </div>
+      </section>
+
+      <!-- Categorias em Destaque -->
+      <section class="space-y-6">
+        <div class="text-center max-w-xl mx-auto">
+          <h2 class="text-3xl font-extrabold">Categorias em Alta</h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-1">Filtre vagas diretamente por sua área de especialização.</p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto">
+          <template x-for="category in categories" :key="category.name">
+            <button 
+              @click="searchQuery = category.name; tab = 'jobs'"
+              class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-brand-500 p-6 rounded-2xl shadow-sm text-center transition-all group"
+            >
+              <div class="mx-auto h-12 w-12 rounded-xl bg-brand-50 dark:bg-brand-950/50 flex items-center justify-center text-brand-500 group-hover:scale-110 transition-transform" x-html="category.icon"></div>
+              <p class="font-bold mt-4 text-sm" x-text="category.name"></p>
+              <p class="text-xs text-slate-400 mt-1" x-text="category.count + ' vagas'"></p>
+            </button>
+          </template>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ==================== TAB 2: PÁGINA DE VAGAS (DASHBOARD SPLIT) ==================== -->
+    <div x-show="tab === 'jobs'" class="grid grid-cols-1 lg:grid-cols-12 gap-6 py-6" x-transition>
+      
+      <!-- Barra lateral de Filtros (3 colunas) -->
+      <div class="lg:col-span-3 space-y-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm space-y-6 sticky top-24">
+          <h3 class="font-bold text-lg border-b border-slate-100 dark:border-slate-800 pb-3">Filtros Avançados</h3>
+          
+          <!-- Filtro Localidade -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Modalidade</label>
+            <div class="space-y-2">
+              <label class="flex items-center gap-2.5 text-sm cursor-pointer">
+                <input type="checkbox" x-model="filters.remote" class="rounded border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500">
+                <span>Remoto</span>
+              </label>
+              <label class="flex items-center gap-2.5 text-sm cursor-pointer">
+                <input type="checkbox" x-model="filters.hybrid" class="rounded border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500">
+                <span>Híbrido</span>
+              </label>
+              <label class="flex items-center gap-2.5 text-sm cursor-pointer">
+                <input type="checkbox" x-model="filters.presential" class="rounded border-slate-300 dark:border-slate-700 text-brand-600 focus:ring-brand-500">
+                <span>Presencial</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Filtro Contrato -->
+          <div class="space-y-2">
+            <label class="text-xs font-bold uppercase tracking-wider text-slate-400">Tipo de Contrato</label>
+            <select x-model="filters.contract" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 focus:border-brand-500 outline-none">
+              <option value="Todos">Todos os tipos</option>
+              <option value="CLT">Tempo Integral (CLT)</option>
+              <option value="PJ">Prestador (PJ)</option>
+              <option value="Estágio">Estágio</option>
+            </select>
+          </div>
+
+          <!-- Filtro de Salário Mínimo -->
+          <div class="space-y-2">
+            <div class="flex justify-between text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span>Salário Mínimo</span>
+              <span class="text-brand-500" x-text="filters.minSalary === 0 ? 'Qualquer' : 'R$ ' + filters.minSalary"></span>
+            </div>
+            <input type="range" min="0" max="20000" step="1000" x-model="filters.minSalary" class="w-full accent-brand-500">
+          </div>
+
+          <button @click="resetFilters()" class="w-full py-2.5 text-xs font-semibold border border-slate-200 dark:border-slate-800 hover:border-red-500/30 hover:text-red-500 rounded-xl transition-colors">
+            Limpar Filtros
+          </button>
+        </div>
+      </div>
+
+      <!-- Lista de Vagas (4 colunas) -->
+      <div class="lg:col-span-4 space-y-4 max-h-[80vh] overflow-y-auto pr-2">
+        <!-- Campo de Pesquisa Rápida na Tab -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-2xl shadow-sm flex items-center gap-2">
+          <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" x-model="searchQuery" placeholder="Pesquisar..." class="bg-transparent border-0 outline-none w-full text-sm">
+        </div>
+
+        <template x-for="job in filteredJobs" :key="job.id">
+          <div 
+            @click="selectedJob = job"
+            :class="selectedJob.id === job.id ? 'border-brand-500 ring-1 ring-brand-500/20' : 'border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700'"
+            class="bg-white dark:bg-slate-900 border p-5 rounded-2xl shadow-sm cursor-pointer transition-all space-y-3"
+          >
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-xs font-bold text-brand-500 uppercase tracking-wider" x-text="job.company"></span>
+                <h4 class="font-bold text-base mt-0.5" x-text="job.title"></h4>
+              </div>
+              <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-slate-100 dark:bg-slate-800" x-text="job.modality"></span>
+            </div>
+            <div class="flex items-center gap-3 text-xs text-slate-400">
+              <span x-text="job.location"></span>
+              <span>•</span>
+              <span x-text="'R$ ' + job.salary.toLocaleString('pt-BR')"></span>
+            </div>
+            <div class="flex flex-wrap gap-1.5 pt-1">
+              <template x-for="req in job.requirements.slice(0, 3)">
+                <span class="text-[10px] font-medium bg-slate-50 dark:bg-slate-950 px-2 py-0.5 rounded border border-slate-100 dark:border-slate-800" x-text="req"></span>
+              </template>
+            </div>
+          </div>
+        </template>
+        <template x-if="filteredJobs.length === 0">
+          <div class="text-center py-12 text-slate-400 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl">
+            Nenhuma vaga encontrada com estes critérios.
+          </div>
+        </template>
+      </div>
+
+      <!-- Detalhes da Vaga Selecionada (5 colunas) -->
+      <div class="lg:col-span-5">
+        <template x-if="selectedJob">
+          <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6 sticky top-24">
+            <div class="border-b border-slate-100 dark:border-slate-800 pb-5 space-y-3">
+              <div class="flex justify-between items-start">
+                <div>
+                  <span class="text-sm font-bold text-brand-500 uppercase tracking-wider" x-text="selectedJob.company"></span>
+                  <h2 class="text-2xl font-extrabold mt-1" x-text="selectedJob.title"></h2>
+                </div>
+                <span class="text-xs font-bold text-brand-500 bg-brand-50 dark:bg-brand-950/50 px-3 py-1 rounded-full" x-text="selectedJob.modality"></span>
+              </div>
+              <div class="flex flex-wrap gap-x-4 gap-y-2 text-xs text-slate-400">
+                <span>📍 <span x-text="selectedJob.location"></span></span>
+                <span>💼 <span x-text="selectedJob.contract"></span></span>
+                <span>💰 <span x-text="'R$ ' + selectedJob.salary.toLocaleString('pt-BR')"></span></span>
+              </div>
+            </div>
+
+            <!-- Descrição -->
+            <div class="space-y-2">
+              <h4 class="font-bold text-sm uppercase tracking-wider text-slate-400">Descrição da Vaga</h4>
+              <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed" x-text="selectedJob.description"></p>
+            </div>
+
+            <!-- Requisitos -->
+            <div class="space-y-2">
+              <h4 class="font-bold text-sm uppercase tracking-wider text-slate-400">Requisitos</h4>
+              <ul class="list-disc pl-5 text-sm text-slate-600 dark:text-slate-300 space-y-1">
+                <template x-for="req in selectedJob.requirements">
+                  <li x-text="req"></li>
+                </template>
+              </ul>
+            </div>
+
+            <!-- Benefícios -->
+            <div class="space-y-2">
+              <h4 class="font-bold text-sm uppercase tracking-wider text-slate-400">Benefícios</h4>
+              <ul class="list-disc pl-5 text-sm text-slate-600 dark:text-slate-300 space-y-1">
+                <template x-for="ben in selectedJob.benefits">
+                  <li x-text="ben"></li>
+                </template>
+              </ul>
+            </div>
+
+            <!-- Ações -->
+            <div class="pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <span class="text-xs text-slate-400" x-text="'Publicado em: ' + selectedJob.date"></span>
+              
+              <template x-if="hasApplied(selectedJob.id)">
+                <span class="text-emerald-500 font-bold text-sm flex items-center gap-2">
+                  ✓ Candidatura Enviada
+                </span>
+              </template>
+              <template x-if="!hasApplied(selectedJob.id)">
+                <button 
+                  @click="applyToJob(selectedJob.id)" 
+                  class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-all shadow-lg shadow-brand-500/25"
+                >
+                  Candidatar-se agora
+                </button>
+              </template>
+            </div>
+          </div>
+        </template>
+      </div>
+
+    </div>
+
+    <!-- ==================== TAB 3: ÁREA DO CANDIDATO ==================== -->
+    <div x-show="tab === 'candidate'" class="space-y-8 py-6" x-transition>
+      <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
+        <div>
+          <h2 class="text-3xl font-extrabold">Seu Painel de Carreira</h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-1">Gerencie suas competências, currículo e candidaturas.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Detalhes do Perfil / Editar -->
+        <div class="lg:col-span-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6">
+          <div class="text-center space-y-3">
+            <div class="mx-auto h-24 w-24 rounded-full bg-brand-100 dark:bg-brand-950 flex items-center justify-center text-brand-500 border-2 border-brand-500/20">
+              <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+            </div>
+            <div>
+              <h3 class="font-extrabold text-lg" x-text="userName"></h3>
+              <p class="text-sm text-slate-400">Desenvolvedor Fullstack Sênior</p>
+            </div>
+          </div>
+
+          <div class="space-y-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-sm">
+            <div class="flex justify-between">
+              <span class="text-slate-400">Email:</span>
+              <span class="font-medium" x-text="userEmail"></span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400">Currículo:</span>
+              <span class="text-brand-500 font-medium">Curriculo_Chido_2026.pdf</span>
+            </div>
+          </div>
+
+          <!-- Competências -->
+          <div class="space-y-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+            <h4 class="font-bold text-xs uppercase tracking-wider text-slate-400">Suas Competências</h4>
+            <div class="flex flex-wrap gap-2">
+              <span class="text-xs bg-brand-50 dark:bg-brand-950/40 text-brand-500 px-2.5 py-1 rounded border border-brand-500/20">React / Next.js</span>
+              <span class="text-xs bg-brand-50 dark:bg-brand-950/40 text-brand-500 px-2.5 py-1 rounded border border-brand-500/20">Node.js</span>
+              <span class="text-xs bg-brand-50 dark:bg-brand-950/40 text-brand-500 px-2.5 py-1 rounded border border-brand-500/20">TypeScript</span>
+              <span class="text-xs bg-brand-50 dark:bg-brand-950/40 text-brand-500 px-2.5 py-1 rounded border border-brand-500/20">Tailwind CSS</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Candidaturas Enviadas -->
+        <div class="lg:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6">
+          <h3 class="font-bold text-xl">Acompanhamento de Candidaturas</h3>
+          
+          <div class="space-y-4">
+            <template x-for="app in userApplications" :key="app.id">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between p-4 border border-slate-100 dark:border-slate-800 rounded-xl gap-4">
+                <div>
+                  <h4 class="font-bold text-base" x-text="app.title"></h4>
+                  <p class="text-xs text-slate-400 mt-0.5" x-text="app.company + ' • Envia em: ' + app.dateApplied"></p>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span 
+                    :class="{
+                      'bg-yellow-50 text-yellow-600 dark:bg-yellow-950/50 dark:text-yellow-400 border-yellow-500/20': app.status === 'Em Análise',
+                      'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400 border-emerald-500/20': app.status === 'Entrevista Agendada',
+                      'bg-red-50 text-red-600 dark:bg-red-950/50 dark:text-red-400 border-red-500/20': app.status === 'Processo Encerrado'
+                    }"
+                    class="text-xs font-bold px-3 py-1 rounded-full border"
+                    x-text="app.status"
+                  ></span>
+                </div>
+              </div>
+            </template>
+            <template x-if="userApplications.length === 0">
+              <div class="text-center py-12 text-slate-400">
+                Você ainda não se candidatou a nenhuma vaga.
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 4: ÁREA DA EMPRESA ==================== -->
+    <div x-show="tab === 'employer'" class="space-y-8 py-6" x-transition>
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4 gap-4">
+        <div>
+          <h2 class="text-3xl font-extrabold" x-text="companyProfile.name">Painel Corporativo</h2>
+          <p class="text-slate-500 dark:text-slate-400 mt-1">Publique novas oportunidades e faça a triagem de candidatos.</p>
+        </div>
+        <button @click="showNewJobModal = true" class="bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm px-5 py-2.5 rounded-xl transition-all shadow-lg shadow-brand-500/25 self-start">
+          + Criar Nova Vaga
+        </button>
+      </div>
+
+      <!-- Métricas Rápidas -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+          <p class="text-3xl font-extrabold text-brand-500" x-text="employerJobs.length"></p>
+          <p class="text-sm font-medium text-slate-400 mt-1">Vagas Publicadas</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+          <p class="text-3xl font-extrabold text-brand-500" x-text="receivedApplications.length"></p>
+          <p class="text-sm font-medium text-slate-400 mt-1">Candidaturas Recebidas</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+          <p class="text-3xl font-extrabold text-brand-500">14</p>
+          <p class="text-sm font-medium text-slate-400 mt-1">Entrevistas Agendadas</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <!-- Lista de Vagas Publicadas -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6">
+          <h3 class="font-bold text-xl">Suas Vagas Ativas</h3>
+          <div class="space-y-4">
+            <template x-for="job in employerJobs" :key="job.id">
+              <div class="p-4 border border-slate-100 dark:border-slate-800 rounded-xl space-y-2">
+                <div class="flex justify-between items-start">
+                  <h4 class="font-bold text-base" x-text="job.title"></h4>
+                  <span class="text-xs font-semibold px-2.5 py-1 bg-slate-100 dark:bg-slate-800 rounded-full" x-text="job.modality"></span>
+                </div>
+                <div class="flex justify-between text-xs text-slate-400">
+                  <span x-text="'Salário: R$ ' + job.salary.toLocaleString('pt-BR')"></span>
+                  <span x-text="job.date"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Candidatos Recebidos -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-6 rounded-2xl shadow-sm space-y-6">
+          <h3 class="font-bold text-xl">Candidatos a Avaliar</h3>
+          <div class="space-y-4">
+            <template x-for="candidate in receivedApplications" :key="candidate.id">
+              <div class="p-4 border border-slate-100 dark:border-slate-800 rounded-xl flex items-center justify-between flex-wrap gap-4">
+                <div>
+                  <h4 class="font-bold text-base" x-text="candidate.candidateName"></h4>
+                  <p class="text-xs text-slate-400 mt-0.5" x-text="'Vaga: ' + candidate.jobTitle"></p>
+                </div>
+                <div class="flex items-center gap-2">
+                  <button @click="processCandidate(candidate.id, 'Aprovado')" class="bg-brand-50 dark:bg-brand-950/40 text-brand-500 border border-brand-500/20 hover:bg-brand-500 hover:text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors">
+                    Aprovar
+                  </button>
+                  <button @click="processCandidate(candidate.id, 'Recusado')" class="border border-red-500/30 text-red-500 hover:bg-red-500 hover:text-white text-xs font-bold px-3 py-1.5 rounded-lg transition-colors">
+                    Recusar
+                  </button>
+                </div>
+              </div>
+            </template>
+            <template x-if="receivedApplications.length === 0">
+              <div class="text-center py-12 text-slate-400">
+                Nenhum novo candidato para avaliar neste momento.
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== TAB 5: PAINEL ADMINISTRADOR ==================== -->
+    <div x-show="tab === 'admin'" class="space-y-8 py-6" x-transition>
+      <h2 class="text-3xl font-extrabold">Painel do Administrador</h2>
+      
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+          <p class="text-2xl font-extrabold text-slate-500">142</p>
+          <p class="text-xs font-medium text-slate-400">Empresas Pendentes</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+          <p class="text-2xl font-extrabold text-red-500">3</p>
+          <p class="text-xs font-medium text-slate-400">Denúncias Ativas</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+          <p class="text-2xl font-extrabold text-brand-500">2.4k</p>
+          <p class="text-xs font-medium text-slate-400">Usuários Totais</p>
+        </div>
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 rounded-2xl shadow-sm">
+          <p class="text-2xl font-extrabold text-emerald-500">99.8%</p>
+          <p class="text-xs font-medium text-slate-400">Uptime do Sistema</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- RODAPÉ -->
+  <footer class="border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 py-12 mt-12">
+    <div class="mx-auto max-w-7xl px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+      <div class="flex items-center gap-3">
+        <span class="text-2xl font-extrabold tracking-wider animate-shine">CHIDO</span>
+        <span class="text-xs text-slate-400">© 2026 CHIDO Global Inc.</span>
+      </div>
+      <div class="flex gap-6 text-sm text-slate-500 dark:text-slate-400">
+        <a href="#" class="hover:text-brand-500">Termos de Uso</a>
+        <a href="#" class="hover:text-brand-500">Privacidade</a>
+        <a href="#" class="hover:text-brand-500">Suporte</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL DE LOGIN / CADASTRO -->
+  <div x-show="showLoginModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" x-transition x-cloak>
+    <div @click.away="showLoginModal = false" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-md p-6 rounded-3xl shadow-2xl space-y-6">
+      <div class="flex justify-between items-center">
+        <h3 class="text-xl font-extrabold">Seja bem-vindo ao CHIDO</h3>
+        <button @click="showLoginModal = false" class="text-slate-400 hover:text-slate-500">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Tipo de Perfil -->
+        <div class="grid grid-cols-2 gap-2 p-1.5 bg-slate-100 dark:bg-slate-950 rounded-xl">
+          <button 
+            @click="selectedRoleForLogin = 'candidate'"
+            :class="selectedRoleForLogin === 'candidate' ? 'bg-white dark:bg-slate-900 shadow-sm' : 'text-slate-400'"
+            class="py-2 text-xs font-semibold rounded-lg transition-all"
+          >
+            Sou Candidato
+          </button>
+          <button 
+            @click="selectedRoleForLogin = 'employer'"
+            :class="selectedRoleForLogin === 'employer' ? 'bg-white dark:bg-slate-900 shadow-sm' : 'text-slate-400'"
+            class="py-2 text-xs font-semibold rounded-lg transition-all"
+          >
+            Sou Empresa / Recrutador
+          </button>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Nome Completo</label>
+          <input type="text" x-model="loginForm.name" placeholder="Ex: Lucas Silva" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">E-mail</label>
+          <input type="email" x-model="loginForm.email" placeholder="Ex: email@dominio.com" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Senha</label>
+          <input type="password" value="••••••••" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+        </div>
+
+        <button @click="login()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm py-3.5 rounded-xl transition-all shadow-lg shadow-brand-500/25">
+          Acessar Plataforma
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL DE CRIAR NOVA VAGA (EMPRESA) -->
+  <div x-show="showNewJobModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm" x-transition x-cloak>
+    <div @click.away="showNewJobModal = false" class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 w-full max-w-lg p-6 rounded-3xl shadow-2xl space-y-6">
+      <div class="flex justify-between items-center">
+        <h3 class="text-xl font-extrabold">Publicar Nova Oportunidade</h3>
+        <button @click="showNewJobModal = false" class="text-slate-400 hover:text-slate-500">
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="space-y-4 max-h-[70vh] overflow-y-auto pr-2">
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Título da Vaga</label>
+          <input type="text" x-model="newJob.title" placeholder="Ex: Engenheiro de Software React Sênior" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Localização</label>
+            <input type="text" x-model="newJob.location" placeholder="Ex: São Paulo, SP" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Salário Mensal (R$)</label>
+            <input type="number" x-model="newJob.salary" placeholder="Ex: 12000" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Modalidade</label>
+            <select x-model="newJob.modality" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+              <option value="Remoto">Remoto</option>
+              <option value="Híbrido">Híbrido</option>
+              <option value="Presencial">Presencial</option>
+            </select>
+          </div>
+          <div class="space-y-1">
+            <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Contrato</label>
+            <select x-model="newJob.contract" class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500">
+              <option value="CLT">Tempo Integral (CLT)</option>
+              <option value="PJ">Prestador (PJ)</option>
+              <option value="Estágio">Estágio</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-xs font-semibold uppercase tracking-wider text-slate-400">Descrição Detalhada</label>
+          <textarea x-model="newJob.description" rows="4" placeholder="Fale um pouco sobre a vaga, cultura da empresa e desafios..." class="w-full text-sm bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-3 outline-none focus:border-brand-500"></textarea>
+        </div>
+
+        <button @click="publishJob()" class="w-full bg-brand-600 hover:bg-brand-500 text-white font-semibold text-sm py-3.5 rounded-xl transition-all shadow-lg shadow-brand-500/25">
+          Publicar Oportunidade
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT DE INFRAESTRUTURA DA PLATAFORMA (Simulador Front-end de Alta Fidelidade) -->
+  <script>
+    function chidoApp() {
+      return {
+        // Navegação de Estados do App
+        tab: 'home',
+        darkMode: true,
+        isLoggedIn: false,
+        userRole: 'candidate', // 'candidate' ou 'employer' ou 'admin'
+        userName: '',
+        userEmail: '',
+        showLoginModal: false,
+        showNewJobModal: false,
+
+        // Formulário de Login/Registro Temporário
+        selectedRoleForLogin: 'candidate',
+        loginForm: {
+          name: '',
+          email: ''
+        },
+
+        // Perfil corporativo simulado para fins de demonstração
+        companyProfile: {
+          name: 'CHIDO Recruiting Hub',
+          logo: ''
+        },
+
+        // Filtros de Vagas
+        searchQuery: '',
+        searchLocation: '',
+        filters: {
+          remote: false,
+          hybrid: false,
+          presential: false,
+          contract: 'Todos',
+          minSalary: 0
+        },
+
+        // Categorias para a Home
+        categories: [
+          { name: 'Desenvolvimento', icon: '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>', count: 482 },
+          { name: 'Design & UX', icon: '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>', count: 189 },
+          { name: 'Marketing Digital', icon: '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>', count: 312 },
+          { name: 'Produto', icon: '<svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>', count: 95 }
+        ],
+
+        // Banco de Dados Local Simulado de Vagas
+        jobs: [
+          {
+            id: 1,
+            title: 'Desenvolvedor Frontend Sênior (Next.js)',
+            company: 'TechSolutions Inc',
+            location: 'São Paulo, SP',
+            salary: 13500,
+            modality: 'Remoto',
+            contract: 'CLT',
+            description: 'Buscamos um desenvolvedor altamente focado em UI/UX e desenvolvimento eficiente utilizando Next.js e Tailwind CSS. Irá atuar diretamente na modelagem de nossa nova plataforma global de tecnologia.',
+            requirements: ['Experiência sólida com React/Next.js', 'Domínio de Tailwind CSS', 'Boas práticas de acessibilidade'],
+            benefits: ['Vale Refeição', 'Seguro de Vida', 'Auxílio Home Office', 'Participação nos Lucros'],
+            date: 'Hoje'
+          },
+          {
+            id: 2,
+            title: 'Product Designer UX/UI',
+            company: 'Agência Criativa',
+            location: 'Curitiba, PR',
+            salary: 8200,
+            modality: 'Híbrido',
+            contract: 'PJ',
+            description: 'Oportunidade para profissionais de design focados na criação de fluxos de jornada fluidos e conversivos para e-commerces e SaaS.',
+            requirements: ['Figma Avançado', 'Pesquisa com Usuários (UX Research)', 'Prototipação Interativa'],
+            benefits: ['Plano de Saúde', 'Horário Flexível', 'Mentoria Gratuita'],
+            date: 'Ontem'
+          },
+          {
+            id: 3,
+            title: 'Engenheiro de Dados Fullstack',
+            company: 'Fintech Spark',
+            location: 'Belo Horizonte, MG',
+            salary: 16000,
+            modality: 'Remoto',
+            contract: 'CLT',
+            description: 'Participe da estruturação de pipelines de dados robustos integrados com APIs financeiras modernas, garantindo estabilidade e escalabilidade.',
+            requirements: ['Experiência com Python e SQL', 'AWS e Docker', 'Node.js para microsserviços'],
+            benefits: ['Equipamento fornecido pela empresa', 'Plano de Saúde Internacional', 'Bônus Anual'],
+            date: 'Há 2 dias'
+          },
+          {
+            id: 4,
+            title: 'Desenvolvedor Node.js Backend',
+            company: 'CHIDO Recruiting Hub',
+            location: 'São Paulo, SP',
+            salary: 11000,
+            modality: 'Remoto',
+            contract: 'PJ',
+            description: 'Atue no core de nossa API interna fornecendo soluções rápidas de cacheamento, indexação e busca textual para milhões de currículos diariamente.',
+            requirements: ['Node.js e Express', 'MongoDB / Redis', 'Processamento assíncrono (RabbitMQ)'],
+            benefits: ['Férias remuneradas', 'Day-off de Aniversário'],
+            date: 'Há 3 dias'
+          }
+        ],
+
+        // Vaga selecionada atualmente no painel de Split Screen
+        selectedJob: null,
+
+        // Candidaturas Ativas enviadas pelo Candidato Logado
+        userApplications: [
+          {
+            id: 1,
+            title: 'Desenvolvedor Frontend Sênior (Next.js)',
+            company: 'TechSolutions Inc',
+            status: 'Em Análise',
+            dateApplied: 'Hoje'
+          }
+        ],
+
+        // Candidatos recebidos para Vagas publicadas pela Empresa logada
+        receivedApplications: [
+          {
+            id: 1,
+            candidateName: 'Camila Rodrigues',
+            jobId: 4,
+            jobTitle: 'Desenvolvedor Node.js Backend',
+            status: 'Em Análise'
+          }
+        ],
+
+        // Inicializador de Fluxo
+        init() {
+          this.selectedJob = this.jobs[0];
+          this.applyTheme();
+        },
+
+        // Mecânica de Busca na Home e Tabs
+        triggerSearch() {
+          this.tab = 'jobs';
+        },
+
+        // Getter Computado para Filtragem de Vagas Ativa (Funcional)
+        get filteredJobs() {
+          return this.jobs.filter(job => {
+            // Busca textual
+            const matchesQuery = !this.searchQuery || 
+              job.title.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+              job.company.toLowerCase().includes(this.searchQuery.toLowerCase()) ||
+              job.requirements.some(req => req.toLowerCase().includes(this.searchQuery.toLowerCase()));
+
+            // Localização
+            const matchesLocation = !this.searchLocation || 
+              job.location.toLowerCase().includes(this.searchLocation.toLowerCase()) ||
+              job.modality.toLowerCase().includes(this.searchLocation.toLowerCase());
+
+            // Modalidade (Checkbox)
+            const activeModalities = [];
+            if (this.filters.remote) activeModalities.push('Remoto');
+            if (this.filters.hybrid) activeModalities.push('Híbrido');
+            if (this.filters.presential) activeModalities.push('Presencial');
+            
+            const matchesModality = activeModalities.length === 0 || activeModalities.includes(job.modality);
+
+            // Contrato
+            const matchesContract = this.filters.contract === 'Todos' || job.contract === this.filters.contract;
+
+            // Salário mínimo
+            const matchesSalary = job.salary >= this.filters.minSalary;
+
+            return matchesQuery && matchesLocation && matchesModality && matchesContract && matchesSalary;
+          });
+        },
+
+        // Getter para Vagas da Empresa Logada
+        get employerJobs() {
+          return this.jobs.filter(job => job.company === this.companyProfile.name);
+        },
+
+        // Redefinição Limpa de Filtros
+        resetFilters() {
+          this.filters.remote = false;
+          this.filters.hybrid = false;
+          this.filters.presential = false;
+          this.filters.contract = 'Todos';
+          this.filters.minSalary = 0;
+          this.searchQuery = '';
+          this.searchLocation = '';
+        },
+
+        // Alternar Tema (Dark / Light)
+        toggleTheme() {
+          this.darkMode = !this.darkMode;
+          this.applyTheme();
+        },
+
+        applyTheme() {
+          if (this.darkMode) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        },
+
+        // Simulação de Candidatura rápida
+        applyToJob(jobId) {
+          const targetJob = this.jobs.find(j => j.id === jobId);
+          if (!targetJob) return;
+
+          if (!this.isLoggedIn) {
+            this.showLoginModal = true;
+            return;
+          }
+
+          if (this.hasApplied(jobId)) return;
+
+          // Se for empresa, não faz sentido candidatar-se
+          if (this.userRole !== 'candidate') {
+            alert('Apenas candidatos podem se candidatar às vagas.');
+            return;
+          }
+
+          // Adicionar à lista de candidaturas do usuário
+          this.userApplications.push({
+            id: Date.now(),
+            title: targetJob.title,
+            company: targetJob.company,
+            status: 'Em Análise',
+            dateApplied: 'Hoje'
+          });
+
+          // Adicionar à lista de candidatos recebidos se for vaga da empresa CHIDO
+          if (targetJob.company === this.companyProfile.name) {
+            this.receivedApplications.push({
+              id: Date.now(),
+              candidateName: this.userName,
+              jobId: targetJob.id,
+              jobTitle: targetJob.title,
+              status: 'Em Análise'
+            });
+          }
+
+          alert(`Parabéns! Sua candidatura para "${targetJob.title}" foi enviada com sucesso.`);
+        },
+
+        hasApplied(jobId) {
+          const targetJob = this.jobs.find(j => j.id === jobId);
+          if (!targetJob) return false;
+          return this.userApplications.some(app => app.title === targetJob.title && app.company === targetJob.company);
+        },
+
+        // Triagem de candidatos feita pelas Empresas
+        processCandidate(appId, newStatus) {
+          const targetApp = this.receivedApplications.find(a => a.id === appId);
+          if (targetApp) {
+            // Remove da lista pendente para fins de simulação
+            this.receivedApplications = this.receivedApplications.filter(a => a.id !== appId);
+            alert(`Candidato "${targetApp.candidateName}" avaliado como: ${newStatus}`);
+          }
+        },
+
+        // Simulação de Publicação de Nova Vaga pela Empresa
+        newJob: {
+          title: '',
+          location: '',
+          salary: '',
+          modality: 'Remoto',
+          contract: 'CLT',
+          description: ''
+        },
+
+        publishJob() {
+          if (!this.newJob.title || !this.newJob.salary || !this.newJob.description) {
+            alert('Por favor, preencha todos os campos obrigatórios.');
+            return;
+          }
+
+          const createdJob = {
+            id: Date.now(),
+            title: this.newJob.title,
+            company: this.companyProfile.name,
+            location: this.newJob.location || 'Qualquer Lugar',
+            salary: parseInt(this.newJob.salary),
+            modality: this.newJob.modality,
+            contract: this.newJob.contract,
+            description: this.newJob.description,
+            requirements: ['Habilidades compatíveis com o cargo', 'Boa comunicação corporativa'],
+            benefits: ['Plano de Carreira', 'Day-off'],
+            date: 'Agora mesmo'
+          };
+
+          // Adiciona ao banco de vagas global
+          this.jobs.unshift(createdJob);
+          this.selectedJob = createdJob;
+
+          // Limpa formulário e fecha modal
+          this.newJob = { title: '', location: '', salary: '', modality: 'Remoto', contract: 'CLT', description: '' };
+          this.showNewJobModal = false;
+
+          alert('Sua vaga foi publicada e já está disponível para candidaturas em tempo real!');
+          this.tab = 'jobs';
+        },
+
+        // Simulação Simples de Sessão
+        login() {
+          if (!this.loginForm.name || !this.loginForm.email) {
+            alert('Insira seu nome e e-mail de acesso.');
+            return;
+          }
+          this.userName = this.loginForm.name;
+          this.userEmail = this.loginForm.email;
+          this.userRole = this.selectedRoleForLogin;
+          this.isLoggedIn = true;
+          this.showLoginModal = false;
+
+          if (this.userRole === 'candidate') {
+            this.tab = 'candidate';
+          } else if (this.userRole === 'employer') {
+            this.companyProfile.name = this.userName + ' Solutions';
+            this.tab = 'employer';
+          }
+        },
+
+        logout() {
+          this.isLoggedIn = false;
+          this.userName = '';
+          this.userEmail = '';
+          this.userRole = 'candidate';
+          this.tab = 'home';
+        }
+      }
+    }
+  </script>
+</body>
+</html>
